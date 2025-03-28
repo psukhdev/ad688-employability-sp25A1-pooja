@@ -19,3 +19,184 @@ format:
     number-sections: true
     df-print: paged
 ---
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load dataset (correct path syntax)
+data = pd.read_csv(r"C:\Users\pooja\Desktop\Repositories\ad688-employability-sp25A1-pooja\lightcast_job_postings.csv")
+
+# Drop any missing values just in case
+pdf = data[["NAICS2_NAME", "SALARY_FROM"]].dropna()
+
+# Plot
+plt.figure(figsize=(10, 6))
+sns.boxplot(data=pdf, x="NAICS2_NAME", y="SALARY_FROM", color="#636EFA")
+
+# Add labels and title
+plt.title("Salary Distribution by Industry", fontsize=16, fontname="Arial")
+plt.xlabel("Industry", fontsize=12)
+plt.ylabel("Starting Salary", fontsize=12)
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+# Show plot
+plt.show()
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load dataset (correct path syntax)
+data = pd.read_csv(r"C:\Users\pooja\Desktop\Repositories\ad688-employability-sp25A1-pooja\lightcast_job_postings.csv")
+
+# Drop missing values
+pdf = data[["NAICS2_NAME", "SALARY_FROM"]].dropna()
+
+# Group by industry and calculate average salary
+avg_salary = pdf.groupby("NAICS2_NAME", as_index=False)["SALARY_FROM"].mean()
+
+# Sort industries by average salary (optional)
+avg_salary = avg_salary.sort_values(by="SALARY_FROM", ascending=False)
+
+# Plot
+plt.figure(figsize=(12, 6))
+sns.barplot(data=avg_salary, x="NAICS2_NAME", y="SALARY_FROM", color="#636EFA")
+
+# Customize
+plt.title("Average Starting Salary by Industry", fontsize=16, fontname="Arial")
+plt.xlabel("Industry", fontsize=12)
+plt.ylabel("Average Starting Salary", fontsize=12)
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+
+# Show plot
+plt.show()
+
+# Remote Vs On-site Job Posting
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Step 1: Load the dataset (update path as needed)
+df = pd.read_csv(r"C:\Users\pooja\Desktop\Repositories\ad688-employability-sp25A1-pooja\lightcast_job_postings.csv")
+
+# Step 2: Select and clean the relevant column
+pdf = df[["REMOTE_TYPE_NAME"]].dropna()
+
+# Step 3: Count occurrences of each remote type
+remote_type_counts = pdf["REMOTE_TYPE_NAME"].value_counts().reset_index()
+remote_type_counts.columns = ["REMOTE_TYPE_NAME", "Job Count"]
+
+# Step 4: Create pie chart using matplotlib
+plt.figure(figsize=(8, 8))
+plt.pie(
+    remote_type_counts["Job Count"],
+    labels=remote_type_counts["REMOTE_TYPE_NAME"],
+    autopct='%1.1f%%',
+    startangle=140,
+    colors=plt.cm.Set2.colors  # Optional color palette
+)
+
+# Step 5: Add title and format
+plt.title("Remote vs On-Site Job Postings", fontsize=16, fontname="Arial")
+plt.axis("equal")  # Ensures the pie chart is circular
+
+# Step 6: Show plot
+plt.show()
+
+df.columns
+
+column_list = df.columns.tolist()
+print(column_list)
+
+
+# Bar Plot – Average Salary: AI vs. Non-AI Career
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv(r"C:\Users\pooja\Desktop\Repositories\ad688-employability-sp25A1-pooja\lightcast_job_postings.csv")
+
+# Filter AI-related jobs
+df['IS_AI_JOB'] = df['TITLE_NAME'].str.contains("AI|Artificial Intelligence|Machine Learning|Data Scientist", case=False, na=False)
+
+# Group by AI vs. Non-AI and calculate average salary
+salary_compare = df[df["SALARY_FROM"].notna()].groupby("IS_AI_JOB")["SALARY_FROM"].mean().reset_index()
+salary_compare["Category"] = salary_compare["IS_AI_JOB"].map({True: "AI Careers", False: "Non-AI Careers"})
+
+# Plot
+plt.figure(figsize=(8, 6))
+barplot = sns.barplot(data=salary_compare, x="Category", y="SALARY_FROM", palette=["#cdb4db", "#fcbf49"])
+
+# Add numbers on top of bars
+for i, row in salary_compare.iterrows():
+    barplot.text(
+        i, 
+        row["SALARY_FROM"] + 1000,  # Slightly above the bar
+        f"${row['SALARY_FROM']:.0f}", 
+        ha='center', 
+        va='bottom', 
+        fontsize=12, 
+        fontweight='bold'
+    )
+
+# Customize plot
+plt.title("Average Salary: AI vs. Non-AI Careers", fontsize=16)
+plt.ylabel("Average Salary")
+plt.xlabel("")
+plt.tight_layout()
+plt.show()
+
+# Bar Plot – Top Regions by AI Salary
+
+# Filter AI jobs and drop missing salary/state
+ai_jobs = df[df["IS_AI_JOB"] & df["SALARY_FROM"].notna() & df["STATE_NAME"].notna()]
+
+# Group and get top 10 states by average salary
+top_states = ai_jobs.groupby("STATE_NAME")["SALARY_FROM"].mean().sort_values(ascending=False).head(10).reset_index()
+
+# Plot
+sns.barplot(data=top_states, x="SALARY_FROM", y="STATE_NAME", palette="viridis")
+plt.title("Top 10 States by Average AI Job Salary")
+plt.xlabel("Average Salary")
+plt.ylabel("State")
+plt.tight_layout()
+plt.show()
+
+# Box Plot – Salary Distribution by Region (AI vs. Non-AI)
+
+df_filtered = df[df["SALARY_FROM"].notna() & df["STATE_NAME"].notna()]
+df_filtered["Job Type"] = df_filtered["IS_AI_JOB"].map({True: "AI", False: "Non-AI"})
+
+plt.figure(figsize=(12, 6))
+sns.boxplot(data=df_filtered, x="STATE_NAME", y="SALARY_FROM", hue="Job Type")
+plt.xticks(rotation=45)
+plt.title("Salary Distribution by State (AI vs. Non-AI Careers)")
+plt.tight_layout()
+plt.show()
+
+# Histogram – Salary Range Distribution (AI vs. Non-AI)
+
+plt.figure(figsize=(10, 6))
+sns.histplot(data=df_filtered, x="SALARY_FROM", hue="Job Type", bins=30, kde=True, element="step")
+plt.title("Salary Distribution: AI vs. Non-AI Careers")
+plt.xlabel("Starting Salary")
+plt.tight_layout()
+plt.show()
+
+#  Pie Chart – Proportion of AI vs. Non-AI Jobs in Dataset
+
+job_counts = df["IS_AI_JOB"].value_counts().reset_index()
+job_counts.columns = ["IS_AI_JOB", "Count"]
+job_counts["Category"] = job_counts["IS_AI_JOB"].map({True: "AI Careers", False: "Non-AI Careers"})
+
+plt.pie(job_counts["Count"], labels=job_counts["Category"], autopct='%1.1f%%', startangle=140, colors=plt.cm.Set2.colors)
+plt.axis("equal")
+plt.title("AI vs. Non-AI Job Proportion")
+plt.show()
+
+
+```
