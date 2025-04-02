@@ -1,0 +1,66 @@
+---
+title: Creating a Skill Level DataFrame
+jupyter: python3
+---
+
+
+
+```{python}
+import pandas as pd
+
+skills_data = {
+    "Name": ["Alice", "Bob", "Charlie", "David"],
+    "Python": [5, 3, 4, 2],
+    "SQL": [4, 2, 5, 3],
+    "Machine Learning": [3, 1, 4, 2],
+    "Cloud Computing": [2, 2, 3, 1]
+}
+
+df_skills = pd.DataFrame(skills_data)
+df_skills.set_index("Name", inplace=True)
+df_skills
+```
+
+```{python}
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(8, 5))
+sns.heatmap(df_skills, annot=True, cmap="YlGnBu", cbar=True)
+plt.title("Team Skill Matrix")
+plt.show()
+```
+
+# Compare Team Skills to Industry Requirements
+
+```{python}
+from collections import Counter
+
+# Step 1: Define top industry skills
+top_skills = ["Python", "SQL", "Machine Learning", "Cloud Computing", "Docker", "AWS"]
+
+# Step 2: Compare with team skills and fill gaps
+for skill in top_skills:
+    if skill not in df_skills.columns:
+        df_skills[skill] = 0  # Add missing skill column with 0s
+
+# Step 3: Re-visualize with added skill columns
+plt.figure(figsize=(10, 6))
+sns.heatmap(df_skills[top_skills], annot=True, cmap="YlGnBu", linewidths=0.5)
+plt.title("Skill Gap Analysis: Team vs Industry")
+plt.show()
+```
+
+# Propose an Improvement Plan
+
+```{python}
+# Step 1: Filter skill gaps (score ≤ 2)
+skill_gaps = df_skills[top_skills] <= 2
+
+# Step 2: Print suggestions
+for name in df_skills.index:
+    for skill in top_skills:
+        if skill_gaps.loc[name, skill]:
+            print(f"{name} should improve their skill in: {skill}")
+```
+
