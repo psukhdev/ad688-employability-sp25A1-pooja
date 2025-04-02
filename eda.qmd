@@ -1,0 +1,230 @@
+---
+title: 1. AI vs. Non-AI Salary Comparison
+jupyter: python3
+---
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load dataset (correct path syntax)
+data = pd.read_csv(r"C:\Users\pooja\Desktop\Repositories\ad688-employability-sp25A1-pooja\lightcast_job_postings.csv")
+
+data.head()
+```
+
+```{python}
+print(data.columns)
+```
+
+```{python}
+print(data.columns.to_list)
+```
+
+```{python}
+print(', '.join(data.columns))
+print(data.columns.tolist())
+print(data.columns.values.tolist())
+```
+
+
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create AI vs Non-AI flag
+data['is_ai_job'] = data['TITLE_NAME'].str.contains('AI|Artificial Intelligence|Machine Learning|Data Scientist|ML|Deep Learning', case=False, na=False)
+
+# Compare average salary
+plt.figure(figsize=(8, 5))
+sns.boxplot(x='is_ai_job', y='SALARY_FROM', data=data)
+plt.title('Salary Comparison: AI vs Non-AI Jobs')
+plt.xlabel('Is AI Job?')
+plt.ylabel('Salary From')
+plt.grid(True)
+plt.show()
+```
+
+## 2. Top Paying Regions (for AI vs Non-AI)
+
+```{python}
+# Group by state and AI job status
+region_salary = data.groupby(['STATE_NAME', 'is_ai_job'])['SALARY_FROM'].mean().reset_index()
+
+# Pivot for heatmap
+pivot_data = region_salary.pivot(index='STATE_NAME', columns='is_ai_job', values='SALARY_FROM')
+
+# Heatmap
+plt.figure(figsize=(12, 8))
+sns.heatmap(pivot_data, annot=True, fmt='.0f', cmap='coolwarm')
+plt.title('Average Salary by State: AI vs Non-AI')
+plt.xlabel('Is AI Job?')
+plt.ylabel('State')
+plt.show()
+```
+
+## 3. Remote vs In-Office Salary Comparison
+
+```{python}
+# Remove NaN remote types
+remote_salary = data.dropna(subset=['REMOTE_TYPE_NAME'])
+
+plt.figure(figsize=(8, 5))
+sns.boxplot(x='REMOTE_TYPE_NAME', y='SALARY_FROM', data=remote_salary)
+plt.title('Remote vs In-Office Salary Comparison')
+plt.xlabel('Work Type')
+plt.ylabel('Salary From')
+plt.xticks(rotation=45)
+plt.grid(True)
+plt.show()
+```
+
+## 4. Industry Salary Trends (2023 vs 2024)
+
+```{python}
+# Convert POSTED to datetime and extract year
+data['POSTED'] = pd.to_datetime(data['POSTED'], errors='coerce')
+data['year'] = data['POSTED'].dt.year
+
+# Filter only 2023 and 2024
+salary_trend = data[data['year'].isin([2023, 2024])]
+
+# Group by industry and year
+industry_salary = salary_trend.groupby(['NAICS2_NAME', 'year'])['SALARY_FROM'].mean().reset_index()
+
+# Plot
+plt.figure(figsize=(12, 6))
+sns.lineplot(data=industry_salary, x='year', y='SALARY_FROM', hue='NAICS2_NAME', marker='o')
+plt.title('Industry Salary Trends (2023 vs 2024)')
+plt.xlabel('Year')
+plt.ylabel('Average Salary From')
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+```
+
+## To clean/filter the salary ranges
+
+```{python}
+# Filter out rows with null salary
+salary_clean = data[data['SALARY_FROM'].notnull()]
+
+# Calculate IQR
+Q1 = salary_clean['SALARY_FROM'].quantile(0.25)
+Q3 = salary_clean['SALARY_FROM'].quantile(0.75)
+IQR = Q3 - Q1
+
+# Define outlier bounds
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+# Filter out outliers
+salary_filtered = salary_clean[(salary_clean['SALARY_FROM'] >= lower_bound) & (salary_clean['SALARY_FROM'] <= upper_bound)]
+
+print(f"Original rows: {len(salary_clean)}")
+print(f"Filtered rows (no outliers): {len(salary_filtered)}")
+```
+
+```{python}
+# AI vs Non-AI plot after outlier removal
+plt.figure(figsize=(8, 5))
+sns.boxplot(x='is_ai_job', y='SALARY_FROM', data=salary_filtered)
+plt.title('Cleaned Salary Comparison: AI vs Non-AI Jobs')
+plt.xlabel('Is AI Job?')
+plt.ylabel('Salary From')
+plt.grid(True)
+plt.show()
+```
+
+## Top Paying Regions (Cleaned Dataset)
+
+```{python}
+# Group by STATE_NAME and is_ai_job using filtered dataset
+region_salary_clean = salary_filtered.groupby(['STATE_NAME', 'is_ai_job'])['SALARY_FROM'].mean().reset_index()
+
+# Pivot for heatmap: rows = states, columns = AI/Non-AI
+pivot_region_clean = region_salary_clean.pivot(index='STATE_NAME', columns='is_ai_job', values='SALARY_FROM')
+
+# Heatmap of average salaries
+plt.figure(figsize=(12, 8))
+sns.heatmap(pivot_region_clean, annot=True, fmt='.0f', cmap='coolwarm', linewidths=0.5)
+plt.title('Top Paying Regions: AI vs Non-AI Jobs (Cleaned Data)')
+plt.xlabel('Is AI Job?')
+plt.ylabel('State')
+plt.tight_layout()
+plt.show()
+```
+
+## Remote vs In-Office Salary (Cleaned Dataset)
+
+```{python}
+# Drop rows with missing remote type info
+remote_clean = salary_filtered.dropna(subset=['REMOTE_TYPE_NAME'])
+
+# Plot salary comparison
+plt.figure(figsize=(8, 5))
+sns.boxplot(x='REMOTE_TYPE_NAME', y='SALARY_FROM', data=remote_clean)
+plt.title('Remote vs In-Office Salary Comparison (Cleaned Data)')
+plt.xlabel('Work Type')
+plt.ylabel('Salary From')
+plt.xticks(rotation=45)
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+# the average salary by type 
+remote_avg = remote_clean.groupby('REMOTE_TYPE_NAME')['SALARY_FROM'].mean().sort_values(ascending=False)
+print(remote_avg)
+```
+
+## Industry Salary Trends (Cleaned Dataset)
+
+```{python}
+# Make sure 'POSTED' is in datetime format
+salary_filtered['POSTED'] = pd.to_datetime(salary_filtered['POSTED'], errors='coerce')
+
+# Extract year
+salary_filtered['year'] = salary_filtered['POSTED'].dt.year
+
+# Filter only 2023 and 2024
+industry_clean = salary_filtered[salary_filtered['year'].isin([2023, 2024])]
+
+# Group by industry and year to calculate average salary
+industry_salary_trend = industry_clean.groupby(['NAICS2_NAME', 'year'])['SALARY_FROM'].mean().reset_index()
+
+# Plot line chart of industry salary trends
+plt.figure(figsize=(12, 6))
+sns.lineplot(data=industry_salary_trend, x='year', y='SALARY_FROM', hue='NAICS2_NAME', marker='o')
+plt.title('Industry Salary Trends (2023 vs 2024) - Cleaned Data')
+plt.xlabel('Year')
+plt.ylabel('Average Salary From')
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+top_industries = industry_salary_trend[industry_salary_trend['year'] == 2024] \
+    .nlargest(10, 'SALARY_FROM')['NAICS2_NAME'].tolist()
+
+top_trend_data = industry_salary_trend[industry_salary_trend['NAICS2_NAME'].isin(top_industries)]
+
+# Re-plot for top industries only
+plt.figure(figsize=(12, 6))
+sns.lineplot(data=top_trend_data, x='year', y='SALARY_FROM', hue='NAICS2_NAME', marker='o')
+plt.title('Top 10 Industry Salary Trends (2023 vs 2024)')
+plt.xlabel('Year')
+plt.ylabel('Average Salary From')
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+```
+

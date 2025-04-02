@@ -15,7 +15,7 @@ website:
         text: "Data Analysis"
       - href: data_cleaning.qmd/ipynb
         text: "Data Cleaning & Exploration"
-      - href: eda.qmd/ipynb
+      - href: eda.qmd
         text: "Exploratory Data Analysis"
       - href: skill_gap_analysis.qmd/ipynb
         text: "Skill Gap Analysis"
