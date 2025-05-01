@@ -18,6 +18,8 @@ website:
         text: "Exploratory Data Analysis"
       - href: skill_gap_analysis.qmd
         text: "Skill-Gap Analysis" 
+      - href: salary_trend_analysis.qmd
+        text: "Final_Salary Trend Analysis" 
 
 format:
   html:

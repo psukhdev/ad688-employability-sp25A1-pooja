@@ -1,0 +1,1775 @@
+---
+title: Exploratory Data Analysis (EDA)
+jupyter: python3
+---
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 429}
+import pandas as pd
+import numpy as np
+
+# Load your dataset (update path as needed)
+df = pd.read_csv(r"C:\Users\pooja\Desktop\Repositories\ad688-employability-sp25A1-pooja\lightcast_job_postings.csv")
+df.head()
+```
+
+
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+df.columns.tolist()
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+print(df.shape)
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+print(df.head())
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+print(df.info())
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 423}
+df.isnull().sum().to_frame()
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 629}
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.figure(figsize=(16,6))
+sns.heatmap(df.isnull(), cbar=False)
+plt.title("Missing Values Heatmap")
+plt.show()
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+missing_counts = df.isnull().sum().sort_values(ascending=False)
+print(missing_counts[missing_counts > 0])
+```
+
+```{python}
+thresh = 0.7 * len(df)
+df = df.loc[:, df.isnull().sum() < thresh]
+```
+
+```{python}
+threshold = 0.7 * len(df)
+df = df.loc[:, df.isnull().sum() < threshold]
+```
+
+```{python}
+df['SALARY'] = df['SALARY'].fillna(df['SALARY'].median())
+df['MIN_YEARS_EXPERIENCE'] = df['MIN_YEARS_EXPERIENCE'].fillna(df['MIN_YEARS_EXPERIENCE'].median())
+df['DURATION'] = df['DURATION'].fillna(df['DURATION'].median())
+```
+
+```{python}
+df['COMPANY_RAW'] = df['COMPANY_RAW'].fillna('Unknown')
+df['TITLE_CLEAN'] = df['TITLE_CLEAN'].fillna('Unknown')
+df['TITLE_RAW'] = df['TITLE_RAW'].fillna('Unknown')
+```
+
+```{python}
+df = df.dropna(subset=['SALARY', 'TITLE_CLEAN'])  # Only if these are critical for your analysis
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+print(df.isnull().sum()[df.isnull().sum() > 0])
+```
+
+```{python}
+df['SALARY_TO'] = df['SALARY_TO'].fillna(df['SALARY_TO'].median())
+df['SALARY_FROM'] = df['SALARY_FROM'].fillna(df['SALARY_FROM'].median())
+df['ORIGINAL_PAY_PERIOD'] = df['ORIGINAL_PAY_PERIOD'].fillna('Unknown')
+```
+
+```{python}
+df['EXPIRED'] = df['EXPIRED'].fillna('Unknown')
+df['MODELED_EXPIRED'] = df['MODELED_EXPIRED'].fillna('Unknown')
+```
+
+```{python}
+df['MSA'] = df['MSA'].fillna('Unknown')
+df['MSA_NAME'] = df['MSA_NAME'].fillna('Unknown')
+df['MSA_OUTGOING'] = df['MSA_OUTGOING'].fillna('Unknown')
+df['MSA_NAME_OUTGOING'] = df['MSA_NAME_OUTGOING'].fillna('Unknown')
+df['MSA_INCOMING'] = df['MSA_INCOMING'].fillna('Unknown')
+df['MSA_NAME_INCOMING'] = df['MSA_NAME_INCOMING'].fillna('Unknown')
+```
+
+```{python}
+df['MODELED_DURATION'] = df['MODELED_DURATION'].fillna(df['MODELED_DURATION'].median())
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+print(df.isnull().sum()[df.isnull().sum() > 0])
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+print(df.shape)
+print(df.columns)
+print(df.dtypes)
+print(df.head())
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+print(df.describe(include='all'))
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 472}
+import matplotlib.pyplot as plt
+df['SALARY_FROM'].hist(bins=50)
+plt.title('Distribution of Minimum Salaries')
+plt.xlabel('SALARY_FROM')
+plt.ylabel('Count')
+plt.show()
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+print(df['STATE_NAME'].value_counts())
+print(df['EMPLOYMENT_TYPE_NAME'].value_counts())
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+print(df.groupby('STATE_NAME')['SALARY_FROM'].mean())
+print(df.groupby('EMPLOYMENT_TYPE_NAME')['SALARY_FROM'].mean())
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+df.columns.tolist()
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+df.shape
+```
+
+### Insightful Visualization 
+
+#1. Salary Distribution: AI vs. Non-AI Careers 
+
+```{python}
+ai_keywords = ['AI', 'Artificial Intelligence', 'Machine Learning', 'Deep Learning', 'Data Scientist', 'NLP', 'Computer Vision']
+df['IS_AI_CAREER'] = df['TITLE_CLEAN'].str.contains('|'.join(ai_keywords), case=False, na=False).astype(int)
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 564}
+plt.figure(figsize=(10,6))
+sns.histplot(data=df, x='SALARY', hue='IS_AI_CAREER', kde=True, bins=40)
+plt.title('Salary Distribution: AI vs. Non-AI Careers')
+plt.xlabel('Salary')
+plt.ylabel('Number of Job Postings')
+plt.show()
+```
+
+```{python}
+!pip3 install plotly
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 542}
+import plotly.express as px
+
+fig = px.histogram(
+    df,
+    x='SALARY',
+    color='IS_AI_CAREER',  # hue equivalent
+    nbins=40,
+    marginal='rug',         # optional: shows distribution marks on axis
+    opacity=0.7,
+    barmode='overlay',      # bars overlap like in Seaborn with hue
+    title='Salary Distribution: AI vs. Non-AI Careers',
+    labels={'SALARY': 'Salary', 'IS_AI_CAREER': 'AI Career?'}
+)
+
+fig.update_layout(
+    xaxis_title='Salary',
+    yaxis_title='Number of Job Postings',
+    bargap=0.05
+)
+
+fig.show()
+```
+
+#### **Interpretation of the Plot**: Most job postings, especially **non-AI roles**, are concentrated around the **$100k salary mark**, indicating it as a common benchmark in the dataset. **AI roles**, though fewer, span **a wider and higher salary range**, often exceeding **$150k**, reflecting the **premium typically associated with AI careers**. The distribution is **right-skewed**, with several **high-paying outliers**—mostly from AI jobs—extending toward the **$500k** range. The **rug plot** further highlights that **non-AI jobs are tightly clustered** near the mean, while **AI roles are more broadly dispersed** across higher salary levels.
+
+```python
+
+### Boxplot Salary Distribution: AI vs. Non-AI Careers
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 517}
+import plotly.express as px
+
+fig = px.box(
+    df,
+    x='IS_AI_CAREER',
+    y='SALARY',
+    color='IS_AI_CAREER',
+    title='Salary Distribution: AI vs. Non-AI Careers',
+    labels={
+        'IS_AI_CAREER': 'AI Career (1 = AI, 0 = Non-AI)',
+        'SALARY': 'Salary'
+    },
+    width=700,
+    height=500
+)
+
+fig.update_layout(
+    xaxis=dict(
+        tickmode='array',
+        tickvals=[0, 1],
+        ticktext=['Non-AI', 'AI']
+    ),
+    showlegend=False
+)
+
+fig.show()
+```
+
+#### The salary distribution for **AI and Non-AI careers** shows that both groups have the **same median salary of approximately $116.35k**, suggesting a central tendency around this value. However, the **minimum salary** for **AI roles is higher (≈$24.96k)** compared to **Non-AI roles (≈$15.86k)**, indicating a **higher baseline pay** in AI careers. Despite having the same interquartile range (Q1 to Q3), **AI roles exhibit more high-salary outliers**, with a **maximum salary reaching ≈$455k**, compared to **Non-AI roles maxing out at ≈$500k**. This indicates that while **Non-AI roles include more extreme outliers, AI careers maintain a more consistent salary range with high-earning opportunities**. Overall, **AI roles are less variable at the lower end but competitive at the upper end**, reflecting **greater salary stability and upward potential in the AI sector**.
+
+### Job Counts by State (AI vs. Non-AI)
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 637}
+import plotly.express as px
+
+# Group and count jobs by state and AI category
+region_counts = df.groupby(['STATE_NAME', 'IS_AI_CAREER']).size().reset_index(name='count')
+
+# Create grouped bar chart
+fig = px.bar(
+    region_counts,
+    x='STATE_NAME',
+    y='count',
+    color='IS_AI_CAREER',
+    barmode='group',
+    title='Job Counts: AI vs. Non-AI by State',
+    labels={
+        'STATE_NAME': 'State',
+        'count': 'Job Count',
+        'IS_AI_CAREER': 'AI Career (1 = AI, 0 = Non-AI)'
+    },
+    height=600,
+    width=1000
+)
+
+fig.update_layout(
+    xaxis_tickangle=90
+)
+
+fig.show()
+```
+
+#### California and Texas lead in total job postings, each showing over 7,000 job opportunities, indicating their dominance in the employment landscape. Other states like Florida, Illinois, and North Carolina also exhibit substantial job counts, highlighting their roles as regional employment centers. The yellow segments in the bars represent AI-related careers, which are consistently present but form a smaller share of the total across all states. Notably, AI job presence is strongest in states with robust tech industries, such as California, Texas, and Massachusetts, suggesting a geographic concentration of AI opportunities in innovation-driven regions. This reflects both the growth potential and uneven distribution of AI roles across the U.S.??
+
+## Proportion of Remote Jobs in AI vs. Non-AI
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 517}
+import plotly.express as px
+
+# Group by AI status and remote type
+remote_counts = df.groupby(['IS_AI_CAREER', 'REMOTE_TYPE_NAME']).size().reset_index(name='count')
+
+# Create interactive grouped bar chart
+fig = px.bar(
+    remote_counts,
+    x='IS_AI_CAREER',
+    y='count',
+    color='REMOTE_TYPE_NAME',
+    barmode='group',
+    title='Remote/In-Office Proportion: AI vs. Non-AI Jobs',
+    labels={
+        'IS_AI_CAREER': 'AI Career (1 = Yes, 0 = No)',
+        'count': 'Job Count',
+        'REMOTE_TYPE_NAME': 'Remote Type'
+    },
+    height=500,
+    width=800
+)
+
+fig.update_layout(xaxis=dict(tickmode='array', tickvals=[0, 1], ticktext=['Non-AI', 'AI']))
+fig.show()
+```
+
+#### Non-AI jobs dominate across all remote types, with the "[None]" category being the most frequent, possibly due to missing data. Among labeled roles, remote work is more common than hybrid or non-remote. AI jobs are fewer overall, but show some presence in remote and "[None]" categories, indicating limited but growing remote flexibility in AI roles. The chart highlights stronger remote trends in Non-AI jobs and underrepresentation in AI postings??
+
+### Correlation Matrix 
+
+```{python}
+# Select numeric columns only
+df_numeric = df.select_dtypes(include=[np.number])
+```
+
+```{python}
+correlation_matrix = df_numeric.corr()
+```
+
+```{python}
+import plotly.express as px
+
+fig = px.imshow(
+    correlation_matrix,
+    text_auto=True,
+    color_continuous_scale='RdBu_r',
+    title='Correlation Matrix (Numeric Features)'
+)
+
+fig.update_layout(height=700, width=800)
+fig.show()
+```
+
+#### The heatmap reveals several strong correlations among job-related attributes. Notably, LOT_V6_SPECIALIZED_OCCUPATION, LOT_SPECIALIZED_OCCUPATION, and LOT_CAREER_AREA are highly correlated, suggesting overlapping or hierarchical occupational classifications. Similarly, NAICS_2022_2, NAICS_2022_4, and NAICS_2022_6 show strong mutual correlations, reflecting nested industry groupings within the NAICS coding system. Additionally, SALARY_FROM shows a moderate positive correlation with MIN_YEARS_EXPERIENCE, indicating that jobs requiring more experience tend to offer higher starting salaries. REMOTE_TYPE shows weak correlation with most features, suggesting limited direct influence on other variables. Overall, the plot highlights variable clusters driven by structured job classifications and experience-related salary trends??
+
+### Top 10 AI Job Titles by Average Salary
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 517}
+import plotly.express as px
+
+# Prepare data: top 10 AI job titles by average salary
+ai_jobs = (
+    df[df['IS_AI_CAREER'] == 1]
+    .groupby('TITLE_CLEAN')['SALARY']
+    .mean()
+    .sort_values(ascending=False)
+    .head(10)
+    .reset_index()
+)
+
+# Create bar plot
+fig = px.bar(
+    ai_jobs,
+    x='TITLE_CLEAN',
+    y='SALARY',
+    title='Top 10 AI Job Titles by Average Salary',
+    labels={'TITLE_CLEAN': 'Job Title', 'SALARY': 'Average Salary'},
+    height=500
+)
+
+fig.update_layout(
+    xaxis_tickangle=45
+)
+
+fig.show()
+```
+
+#### The top-paying AI job titles offer salaries well above the $200k mark, with the highest being “hematology oncology with Kaiser Permanente county ca,” exceeding $400k. Other roles such as “ai portfolio ecosystem strategist” and “VP data analytics and AI” also rank among the highest, reflecting the premium placed on strategic and executive AI leadership roles. Technical positions like “data engineering leader”, “senior domain architect”, and “AI training with PyTorch” follow closely, indicating that both leadership and advanced technical expertise are highly valued in the AI job market. This highlights the strong salary potential for professionals in AI, especially those combining domain knowledge, leadership, and technical skills??
+
+### 5. Industry-wise Salary Trends (2024)
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 617}
+import plotly.express as px
+
+# Filter and aggregate industry salary data for 2024
+industry_salary_2024 = (
+    df[df['POSTED'].astype(str).str.contains('2024')]
+    .groupby('NAICS2_NAME')['SALARY']
+    .mean()
+    .sort_values(ascending=False)
+    .head(15)
+    .reset_index()
+)
+
+# Create Plotly bar chart
+fig = px.bar(
+    industry_salary_2024,
+    x='NAICS2_NAME',
+    y='SALARY',
+    title='Average Salary by Industry (2024)',
+    labels={'NAICS2_NAME': 'Industry', 'SALARY': 'Average Salary'},
+    height=600,
+    color_discrete_sequence=['mediumseagreen']
+)
+
+# Improve layout
+fig.update_layout(
+    xaxis_tickangle=45,
+    template='plotly_white'
+)
+
+fig.show()
+```
+
+#### The chart shows that the **Information industry** offers the **highest average salary** in 2024, leading all other sectors. It is closely followed by **Accommodation and Food Services**, and **Professional, Scientific, and Technical Services**, all maintaining average salaries well above $100k. While all industries presented maintain relatively high average salaries, the **lower-paying sectors** include **Administrative and Support, Waste Management and Remediation Services**, and **Agriculture, Forestry, Fishing, and Hunting**. Despite the differences, the **salary distribution across industries is relatively narrow**, suggesting that while industry matters, **most sectors maintain competitive compensation levels** above $100k in this dataset.
+
+### 7. AI vs. Non-AI Job Count by Region
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 637}
+import plotly.express as px
+
+# Step 1: Prepare grouped job count data (already done)
+region_counts = df.groupby(['STATE_NAME', 'IS_AI_CAREER']).size().reset_index(name='count')
+region_counts['Career Type'] = region_counts['IS_AI_CAREER'].map({0: 'Non-AI', 1: 'AI'})
+
+# Step 2: Create grouped bar chart with Plotly
+fig = px.bar(
+    region_counts,
+    x='STATE_NAME',
+    y='count',
+    color='Career Type',
+    barmode='group',
+    title='Job Counts: AI vs. Non-AI by State',
+    labels={'STATE_NAME': 'State', 'count': 'Job Count'},
+    height=600,
+    width=1000,
+    color_discrete_map={'AI': 'tomato', 'Non-AI': 'steelblue'}
+)
+
+# Step 3: Format the layout
+fig.update_layout(
+    xaxis_tickangle=60,
+    template='plotly_white'
+)
+
+fig.show()
+```
+
+#### California and Texas clearly lead in overall job counts, each recording well over 6,000 postings, making them dominant states for employment opportunities. Other states like Florida, New York, and Illinois also show relatively high job counts. In contrast, AI jobs (shown in red) represent only a small fraction of total postings in all states, highlighting their limited but emerging presence across the U.S. While AI roles are most noticeable in high-population and tech-centric states, their count remains consistently low compared to Non-AI jobs. This suggests that although AI careers are expanding, the current U.S. job market is still largely driven by Non-AI roles
+
+### Boxplot: Salary by Remote Type (AI vs. Non-AI)
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 637}
+import plotly.express as px
+
+fig = px.box(
+    df,
+    x='REMOTE_TYPE_NAME',
+    y='SALARY',
+    color='IS_AI_CAREER',
+    title='Salary Distribution by Remote Type (AI vs. Non-AI Careers)',
+    labels={
+        'REMOTE_TYPE_NAME': 'Remote Type',
+        'SALARY': 'Salary',
+        'IS_AI_CAREER': 'AI Career (1 = AI, 0 = Non-AI)'
+    },
+    height=600,
+    width=1000
+)
+
+fig.update_layout(
+    boxmode='group',  # Grouped by hue (IS_AI_CAREER)
+    xaxis_tickangle=0
+)
+
+fig.show()
+```
+
+### Average Salary by State for AI Jobs
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 637}
+import plotly.express as px
+
+# Prepare data
+avg_salary_state = (
+    df[df['IS_AI_CAREER'] == 1]
+    .groupby('STATE_NAME')['SALARY']
+    .mean()
+    .sort_values(ascending=False)
+    .reset_index()
+)
+
+# Create interactive bar chart
+fig = px.bar(
+    avg_salary_state,
+    x='STATE_NAME',
+    y='SALARY',
+    title='Average AI Career Salary by State',
+    labels={'STATE_NAME': 'State', 'SALARY': 'Average Salary'},
+    height=600,
+    width=1000
+)
+
+fig.update_layout(xaxis_tickangle=45)
+fig.show()
+```
+
+### Count of AI vs. Non-AI Jobs by State (Top 15 States)
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 637}
+import plotly.express as px
+import pandas as pd
+
+# Group and prepare data
+ai_counts = df.groupby(['STATE_NAME', 'IS_AI_CAREER']).size().unstack(fill_value=0)
+
+# Get top 15 states by total job count
+top_states = ai_counts.sum(axis=1).sort_values(ascending=False).head(15).index
+
+# Filter and reset for Plotly format
+plot_data = ai_counts.loc[top_states].reset_index().melt(id_vars='STATE_NAME', var_name='IS_AI_CAREER', value_name='Job Count')
+
+# Plotly stacked bar chart
+fig = px.bar(
+    plot_data,
+    x='STATE_NAME',
+    y='Job Count',
+    color='IS_AI_CAREER',
+    title='Job Count: AI vs. Non-AI by State (Top 15 States)',
+    labels={'STATE_NAME': 'State', 'IS_AI_CAREER': 'Career Type'},
+    barmode='stack',
+    height=600,
+    width=1000
+)
+
+fig.update_layout(xaxis_tickangle=45)
+fig.show()
+```
+
+##### Texas and California lead the nation in total job postings, each surpassing 7,000 listings, making them the top employment hubs among the top 15 states. States like Florida, Virginia, and Illinois follow at a distance with job counts in the 3,000–3,600 range. Across all states, the majority of postings are Non-AI roles (blue), while AI jobs (red) represent a small but visible portion of the market. The consistent presence of AI postings, especially in California, Texas, and New York, reflects their strong technology ecosystems and demand for specialized talent. Overall, while Non-AI roles dominate in volume, AI opportunities are steadily emerging in tech-forward states.
+
+### Industry-wise AI vs. Non-AI Job Count
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 637}
+import plotly.express as px
+import pandas as pd
+
+# Group and prepare data
+industry_counts = df.groupby(['NAICS2_NAME', 'IS_AI_CAREER']).size().unstack(fill_value=0)
+
+# Get top 10 industries by total job count
+top_industries = industry_counts.sum(axis=1).sort_values(ascending=False).head(10).index
+
+# Reshape for Plotly
+plot_data = industry_counts.loc[top_industries].reset_index().melt(
+    id_vars='NAICS2_NAME',
+    var_name='IS_AI_CAREER',
+    value_name='Job Count'
+)
+
+# Create stacked bar chart
+fig = px.bar(
+    plot_data,
+    x='NAICS2_NAME',
+    y='Job Count',
+    color='IS_AI_CAREER',
+    barmode='stack',
+    title='AI vs. Non-AI Job Count by Industry (Top 10)',
+    labels={'NAICS2_NAME': 'Industry', 'IS_AI_CAREER': 'Career Type'},
+    height=600,
+    width=1000
+)
+
+fig.update_layout(xaxis_tickangle=45)
+fig.show()
+```
+
+##### The Professional, Scientific, and Technical Services industry leads with the highest overall job count, exceeding 22,000 postings, and also shows the largest volume of AI-related roles among all industries. In contrast, other sectors like Finance and Insurance, Manufacturing, and Information display moderate job counts with relatively smaller AI representation. Industries such as Retail Trade, Educational Services, and Health Care and Social Assistance show low overall job volumes and minimal AI presence. This distribution highlights that AI jobs are highly concentrated in knowledge-intensive industries, especially those involving technical, scientific, and data-driven roles, while traditional service sectors remain largely dominated by Non-AI roles.
+
+### Average Salary by Original Pay Period (AI vs. Non-AI)
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 517}
+import plotly.express as px
+
+import plotly.io as pio
+
+# Tell Plotly to use Colab's renderer
+pio.renderers.default = 'colab'
+
+# Group and calculate average salary
+avg_salary = (
+    df.groupby(['ORIGINAL_PAY_PERIOD', 'IS_AI_CAREER'])['SALARY']
+    .mean()
+    .reset_index()
+)
+
+# Create interactive grouped bar chart
+fig = px.bar(
+    avg_salary,
+    x='ORIGINAL_PAY_PERIOD',
+    y='SALARY',
+    color='IS_AI_CAREER',
+    barmode='group',
+    title='Average Salary by Pay Period (AI vs. Non-AI Careers)',
+    labels={
+        'ORIGINAL_PAY_PERIOD': 'Pay Period',
+        'SALARY': 'Average Salary',
+        'IS_AI_CAREER': 'AI Career (1 = AI, 0 = Non-AI)'
+    },
+    height=500,
+    color_discrete_map={
+        1: '#007acc',  # AI Career - Professional blue
+        0: '#999999'   # Non-AI Career - Neutral gray
+    }
+)
+
+fig.update_layout(
+    xaxis_tickangle=0,
+    template='plotly_white',
+    legend_title='Career Type'
+)
+
+fig.show()
+```
+
+###### AI careers consistently offer higher average salaries than Non-AI roles across all pay periods, as indicated by the yellow segments stacked above the dark blue portions in each bar. The yearly pay period shows the highest average salary overall, suggesting that full-time AI roles provide the most lucrative compensation. Similarly, weekly and monthly pay periods also reflect strong earnings in AI jobs, reinforcing their value in both permanent and contract roles. In contrast, daily and hourly pay periods are dominated by Non-AI roles with significantly lower average salaries, indicating their prevalence in less specialized, often temporary work. This pattern underscores that AI ca
+
+###  visualize the salary trend for AI vs. Non-AI jobs specifically in 2024,
+
+```{python}
+df['POSTED'] = pd.to_datetime(df['POSTED'], errors='coerce')  # Ensure correct datetime format
+df['YEAR'] = df['POSTED'].dt.year
+df['MONTH'] = df['POSTED'].dt.month
+```
+
+```{python}
+df_2024 = df[df['YEAR'] == 2024]
+```
+
+```{python}
+trend_2024 = df_2024.groupby(['MONTH', 'IS_AI_CAREER'])['SALARY'].mean().reset_index()
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 517}
+import plotly.express as px
+
+# Create the line plot
+fig = px.line(
+    trend_2024,
+    x='MONTH',
+    y='SALARY',
+    color='IS_AI_CAREER',
+    markers=True,
+    title='Monthly Salary Trend in 2024: AI vs. Non-AI Careers',
+    labels={
+        'MONTH': 'Month',
+        'SALARY': 'Average Salary',
+        'IS_AI_CAREER': 'AI Career (1 = AI, 0 = Non-AI)'
+    }
+)
+
+# Customize month ticks
+fig.update_layout(
+    xaxis=dict(
+        tickmode='array',
+        tickvals=list(range(1, 13)),
+        ticktext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+    ),
+    yaxis_title='Average Salary',
+    height=500,
+    width=900
+)
+
+fig.show()
+```
+
+##### AI careers consistently offer higher average salaries than Non-AI roles throughout the observed months in 2024. While both career types experienced a dip in July, AI salaries quickly rebounded in August, peaking at over $120k, compared to Non-AI roles that peaked lower in September at around $118k. The largest gap in pay occurred during August, when AI salaries surged while Non-AI roles rose more gradually. This trend highlights the stronger volatility but higher earning potential in AI careers, whereas Non-AI roles demonstrate a more stable but lower salary trajectory.
+
+### How do salaries differ across AI vs. non-AI careers
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 517}
+import plotly.graph_objects as go
+
+# Create violin plots for each group
+fig = go.Figure()
+
+fig.add_trace(go.Violin(
+    x=df['IS_AI_CAREER'][df['IS_AI_CAREER'] == 0].map({0: 'Non-AI'}),
+    y=df['SALARY'][df['IS_AI_CAREER'] == 0],
+    name='Non-AI',
+    box_visible=True,
+    meanline_visible=True
+))
+
+fig.add_trace(go.Violin(
+    x=df['IS_AI_CAREER'][df['IS_AI_CAREER'] == 1].map({1: 'AI'}),
+    y=df['SALARY'][df['IS_AI_CAREER'] == 1],
+    name='AI',
+    box_visible=True,
+    meanline_visible=True
+))
+
+# Update layout
+fig.update_layout(
+    title='Salary Distribution: AI vs. Non-AI Careers',
+    xaxis_title='Career Type',
+    yaxis_title='Salary',
+    height=500,
+    width=700
+)
+
+fig.show()
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 817}
+import plotly.express as px
+import pandas as pd
+
+# Prepare salary mean and median data
+salary_means = df.groupby('IS_AI_CAREER')['SALARY'].mean().reset_index()
+salary_means['Metric'] = 'Mean'
+
+salary_medians = df.groupby('IS_AI_CAREER')['SALARY'].median().reset_index()
+salary_medians['Metric'] = 'Median'
+
+# Combine for optional side-by-side
+salary_combined = pd.concat([salary_means, salary_medians])
+salary_combined['Career Type'] = salary_combined['IS_AI_CAREER'].map({0: 'Non-AI', 1: 'AI'})
+
+# Plot Mean Salary
+fig_mean = px.bar(
+    salary_means,
+    x='IS_AI_CAREER',
+    y='SALARY',
+    color='IS_AI_CAREER',
+    title='Average Salary: AI vs. Non-AI Careers',
+    labels={'IS_AI_CAREER': 'Career Type', 'SALARY': 'Average Salary'},
+    color_discrete_sequence=['skyblue', 'orange'],
+    height=400,
+    width=500
+)
+fig_mean.update_layout(
+    xaxis=dict(
+        tickmode='array',
+        tickvals=[0, 1],
+        ticktext=['Non-AI', 'AI']
+    ),
+    showlegend=False
+)
+fig_mean.show()
+
+# Plot Median Salary
+fig_median = px.bar(
+    salary_medians,
+    x='IS_AI_CAREER',
+    y='SALARY',
+    color='IS_AI_CAREER',
+    title='Median Salary: AI vs. Non-AI Careers',
+    labels={'IS_AI_CAREER': 'Career Type', 'SALARY': 'Median Salary'},
+    color_discrete_sequence=['lightgreen', 'salmon'],
+    height=400,
+    width=500
+)
+fig_median.update_layout(
+    xaxis=dict(
+        tickmode='array',
+        tickvals=[0, 1],
+        ticktext=['Non-AI', 'AI']
+    ),
+    showlegend=False
+)
+fig_median.show()
+```
+
+##### AI careers offer slightly higher average and median salaries than Non-AI roles, indicating a modest pay advantage. The average salary difference suggests AI roles include more high-paying jobs, while the nearly identical medians show that typical salaries are similar across both sectors. Overall, AI jobs may lead to better earnings at the high end, but base-level pay is fairly consistent.
+
+### What regions offer the highest-paying jobs in AI-related and traditional careers?
+
+### 1. Bar Chart: Top 10 States by Average Salary (AI vs. Non-AI)
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 517}
+import plotly.express as px
+
+# Step 1: Calculate average salary by state and AI flag
+avg_salary = df.groupby(['STATE_NAME', 'IS_AI_CAREER'])['SALARY'].mean().reset_index()
+
+# Step 2: Filter top 10 AI states
+top_states_ai = avg_salary[avg_salary['IS_AI_CAREER'] == 1].sort_values('SALARY', ascending=False).head(10)
+
+# Step 3: Plot with annotations
+fig_ai = px.bar(
+    top_states_ai,
+    x='STATE_NAME',
+    y='SALARY',
+    text='SALARY',  # ➜ Show salary values
+    title='Top 10 States by Average AI Job Salary',
+    labels={'STATE_NAME': 'State', 'SALARY': 'Average Salary'},
+    color_discrete_sequence=['pink'],
+    height=500
+)
+
+# Format labels
+fig_ai.update_traces(
+    texttemplate='$%{text:,.0f}',  # format as currency with no decimals
+    textposition='outside'
+)
+
+# Optional layout tweaks
+fig_ai.update_layout(
+    uniformtext_minsize=8,
+    uniformtext_mode='hide'
+)
+
+fig_ai.show()
+```
+
+##### Montana leads with the highest average AI salary at $139,220, followed by Washington, Louisiana, and California, all exceeding $125,000. While expected tech hubs like California appear, the inclusion of Montana and Louisiana suggests high-paying AI roles exist beyond traditional markets. All top 10 states offer over $122,000, reflecting a strong nationwide demand and competitive pay for AI professionals.
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 667}
+import plotly.express as px
+
+# Step 3: Filter top 10 Non-AI states
+top_states_nonai = avg_salary[avg_salary['IS_AI_CAREER'] == 0].sort_values('SALARY', ascending=False).head(10)
+
+# Create bar chart with annotations
+fig_nonai = px.bar(
+    top_states_nonai,
+    x='STATE_NAME',
+    y='SALARY',
+    text='SALARY',  # <== Add this line
+    title='Top 10 States by Average Non-AI Job Salary',
+    labels={'STATE_NAME': 'State', 'SALARY': 'Average Salary'},
+    color_discrete_sequence=['skyblue'],
+    height=600
+)
+
+# Format annotations
+fig_nonai.update_traces(
+    texttemplate='$%{text:,.0f}',  # format as currency
+    textposition='outside'
+)
+
+fig_nonai.update_layout(
+    uniformtext_minsize=8,
+    uniformtext_mode='hide'
+)
+
+fig_nonai.show()
+```
+
+##### Vermont and Connecticut lead the top 10 states for average Non-AI job salaries, with averages of $121,885 and $121,866, respectively. States like Washington, California, and Arkansas closely follow, all offering Non-AI salaries above $120,000, reflecting strong compensation even outside of AI-focused roles. Notably, traditional high-income states such as Massachusetts, New Jersey, and Virginia also appear, indicating a consistent national demand for skilled Non-AI professionals. The narrow salary range—from $118,305 to $121,885—shows stable and competitive earnings across top states, emphasizing that Non-AI careers continue to offer strong salary potential in diverse regions.
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 0}
+df.columns.to_list()
+```
+
+### 2. Side-by-Side Bar Chart: Top States by Salary (AI vs. Non-AI)
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 637}
+import pandas as pd
+import plotly.express as px
+
+# 1. Filter rows with valid salary and AI flag
+df_filtered = df.dropna(subset=['SALARY', 'STATE_NAME', 'IS_AI_CAREER'])
+
+# 2. Group and calculate average salary by state and AI category
+avg_salary = (
+    df_filtered.groupby(['STATE_NAME', 'IS_AI_CAREER'])['SALARY']
+    .mean()
+    .reset_index()
+)
+
+# 3. Pivot table to create separate columns for AI and Non-AI
+pivot_salary = avg_salary.pivot(index='STATE_NAME', columns='IS_AI_CAREER', values='SALARY').dropna()
+
+# 4. Select top 10 states based on average of both categories
+top_states = pivot_salary.mean(axis=1).sort_values(ascending=False).head(10).index
+pivot_salary = pivot_salary.loc[top_states]
+
+# 5. Rename columns for clarity
+pivot_salary.columns = ['Non-AI', 'AI']
+
+# 6. Convert to long format for Plotly
+plot_data = pivot_salary.reset_index().melt(id_vars='STATE_NAME', var_name='Career Type', value_name='Average Salary')
+
+# 7. Plot with custom colors
+fig = px.bar(
+    plot_data,
+    x='STATE_NAME',
+    y='Average Salary',
+    color='Career Type',
+    barmode='group',
+    title='Top States by Average Salary: AI vs. Non-AI Jobs',
+    labels={'STATE_NAME': 'State'},
+    height=600,
+    width=1000,
+    color_discrete_map={'AI': 'pink', 'Non-AI': 'skyblue'}
+)
+
+fig.update_layout(xaxis_tickangle=45)
+fig.show()
+```
+
+###### AI careers consistently outperform Non-AI roles in average salary across all top states, as shown by the higher pink bars. Montana shows the largest gap, with AI salaries significantly exceeding Non-AI averages, suggesting strong demand or limited AI talent in that region. States like Washington, California, and Louisiana also offer notably higher compensation for AI professionals, reinforcing their positions as emerging or established tech hubs. In contrast, states like New Jersey and Washington, D.C. show a smaller salary gap, indicating more balanced compensation across career types. Overall, this chart highlights the premium value placed on AI expertise across the U.S., with varying intensity by state.
+
+### Are remote jobs better paying than in-office roles?
+
+#### Violin Plot: Salary by Remote Type
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 617}
+import plotly.graph_objects as go
+
+# Get unique remote job types
+remote_types = df['REMOTE_TYPE_NAME'].dropna().unique()
+
+# Create violin traces for each remote type
+fig = go.Figure()
+
+for job_type in remote_types:
+    fig.add_trace(go.Violin(
+        x=[job_type] * len(df[df['REMOTE_TYPE_NAME'] == job_type]),
+        y=df[df['REMOTE_TYPE_NAME'] == job_type]['SALARY'],
+        name=job_type,
+        box_visible=True,
+        meanline_visible=True,
+        points=False  # Set to 'all' if you want to show individual data points
+    ))
+
+# Update layout
+fig.update_layout(
+    title='Salary Distribution: Remote vs. In-Office vs. Hybrid',
+    xaxis_title='Job Type',
+    yaxis_title='Salary',
+    height=600,
+    width=800
+)
+
+fig.show()
+```
+
+#### All job types—Remote, Not Remote, Hybrid, and Unspecified—share a similar median salary of around $116k, indicating a consistent central pay level across formats. However, Remote and Hybrid jobs show more compact salary distributions, with fewer extreme values, suggesting greater predictability in compensation. In contrast, Not Remote jobs have the widest spread, with salaries ranging from as low as $15.86k to over $370k, reflecting higher variability and outliers in traditional office roles. The [None] category includes the highest maximum salary ($500k) but also likely reflects incomplete data. Overall, Hybrid roles show a balanced distribution with relatively high mean and low variance, suggesting they offer stable and competitive compensation. This analysis highlights that while median pay is steady across job types, in-office jobs carry more variability, and hybrid roles offer strong salary consistency with moderate upside.
+
+### 3. Bar Chart: Mean or Median Salary by Remote Type
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 517}
+import plotly.express as px
+
+# Compute mean salary by job type
+mean_salary = df.groupby('REMOTE_TYPE_NAME')['SALARY'].mean().sort_values(ascending=False).reset_index()
+
+# Create bar chart with annotations
+fig = px.bar(
+    mean_salary,
+    x='REMOTE_TYPE_NAME',
+    y='SALARY',
+    text='SALARY',  # Add value labels
+    title='Average Salary by Job Type (Remote vs. In-Office vs. Hybrid)',
+    labels={'REMOTE_TYPE_NAME': 'Job Type', 'SALARY': 'Average Salary'},
+    color_discrete_sequence=['skyblue'],
+    height=500,
+    width=700
+)
+
+# Format salary annotations
+fig.update_traces(texttemplate='$%{text:,.0f}', textposition='outside')
+
+# Adjust layout
+fig.update_layout(
+    xaxis_tickangle=0,
+    uniformtext_minsize=10,
+    uniformtext_mode='hide'  # hide labels if they overlap
+)
+
+fig.show()
+```
+
+##### Remote jobs offer the highest average salary at $117,585, slightly ahead of the [None] category ($117,096) and Hybrid Remote roles ($115,740). Not Remote (in-office) jobs have the lowest average salary at $110,282, suggesting that flexible work arrangements tend to be associated with higher pay. The narrow difference between Remote and Hybrid roles indicates that both fully and partially remote positions maintain competitive compensation, likely due to demand for specialized skills and work-life balance preferences. This trend highlights a salary advantage for remote-capable roles in today’s evolving job market.
+
+### What industries saw the biggest wage growth in 2024?
+
+### 1. Calculate Wage Growth Percent by Industry
+
+```{python}
+df['POSTED'] = pd.to_datetime(df['POSTED'], errors='coerce')
+df['YEAR'] = df['POSTED'].dt.year
+
+# Group by industry and year, then get mean salary
+industry_year = df[df['YEAR'].isin([2023, 2024])].groupby(['NAICS2_NAME', 'YEAR'])['SALARY'].mean().unstack()
+
+# Calculate growth percentage
+industry_year['WAGE_GROWTH_%'] = 100 * (industry_year[2024] - industry_year[2024]) / industry_year[2024]
+# Remove industries without both years' data
+industry_year = industry_year.dropna(subset=[2024, 2024])
+```
+
+```{python}
+df['POSTED'] = pd.to_datetime(df['POSTED'], errors='coerce')
+df['YEAR'] = df['POSTED'].dt.year
+
+# Group by industry and year, then get mean salary
+industry_year = (
+    df[df['YEAR'].isin([2023, 2024])]
+    .groupby(['NAICS2_NAME', 'YEAR'])['SALARY']
+    .mean()
+    .unstack()
+)
+
+# Only keep industries with data for both years
+industry_year = industry_year.dropna(subset=[2024, 2024])
+
+# Calculate growth percentage safely
+industry_year['WAGE_GROWTH_%'] = 100 * (industry_year[2024] - industry_year[2024]) / industry_year[2024]
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+print(industry_year.columns)
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 667}
+import plotly.express as px
+
+# Compute top 10 industries by average salary for 2024
+industry_salary_2024 = (
+    df[df['YEAR'] == 2024]
+    .groupby('NAICS2_NAME')['SALARY']
+    .mean()
+    .sort_values(ascending=False)
+    .head(10)
+    .reset_index()
+)
+
+# Create interactive bar chart with annotations
+fig = px.bar(
+    industry_salary_2024,
+    x='NAICS2_NAME',
+    y='SALARY',
+    text='SALARY',  # This adds labels on top of bars
+    title='Top 10 Highest Paying Industries (2024)',
+    labels={'NAICS2_NAME': 'Industry', 'SALARY': 'Average Salary'},
+    color_discrete_sequence=['pink'],
+    height=650,
+    width=900
+)
+
+# Format text labels (e.g., $120,000)
+fig.update_traces(texttemplate='$%{text:,.0f}', textposition='outside')
+
+fig.update_layout(
+    xaxis_tickangle=45,
+    uniformtext_minsize=10,
+    uniformtext_mode='hide'  # hides overlapping labels
+)
+
+fig.show()
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 542}
+import plotly.express as px
+
+industry_salary_2024 = (
+    df[df['YEAR'] == 2024]
+    .groupby('NAICS2_NAME')['SALARY']
+    .mean()
+    .sort_values(ascending=False)
+    .head(10)
+    .reset_index()
+)
+
+fig = px.bar(
+    industry_salary_2024,
+    x='NAICS2_NAME',
+    y='SALARY',
+    title='Top 10 Highest Paying Industries (2024)',
+    labels={'NAICS2_NAME': 'Industry', 'SALARY': 'Average Salary'},
+    color='SALARY',
+    color_continuous_scale='Greens'
+)
+
+fig.update_layout(
+    xaxis_tickangle=45,
+    template='plotly_white'
+)
+
+fig.show()
+```
+
+##### The Information industry ranks as the highest-paying sector in 2024, offering an average salary near $130,000, followed closely by Accommodation and Food Services, which surprisingly outperforms more technical fields. Industries like Professional, Scientific, and Technical Services, Retail Trade, and Manufacturing round out the middle tier, showing strong but slightly lower average salaries. Toward the lower end, Utilities, Construction, and Wholesale Trade still offer competitive earnings above $110,000, reflecting steady demand. This data suggests that high-paying opportunities are not limited to tech-focused sectors, and emerging or service-oriented industries are also rewarding skilled talent well.
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 542}
+import plotly.express as px
+
+# Optional: remove rows with missing salary values
+scatter_df = df.dropna(subset=['SALARY_FROM', 'SALARY_TO', 'IS_AI_CAREER'])
+
+# Optional: limit outliers for clearer visualization
+scatter_df = scatter_df[(scatter_df['SALARY_FROM'] < 200000) & (scatter_df['SALARY_TO'] < 250000)]
+
+# Plot
+fig = px.scatter(
+    scatter_df,
+    x='SALARY_FROM',
+    y='SALARY_TO',
+    color='IS_AI_CAREER',
+    labels={'IS_AI_CAREER': 'AI Job'},
+    title='Scatter Plot: Salary From vs. Salary To (AI vs. Non-AI)',
+    hover_data=['TITLE_CLEAN', 'STATE_NAME'],
+    color_discrete_map={0: 'skyblue', 1: 'orange'}
+)
+
+fig.update_layout(template='plotly_white')
+fig.show()
+```
+
+```{python}
+# Regenerate the DataFrame correctly
+df['POSTED'] = pd.to_datetime(df['POSTED'], errors='coerce')
+
+daily_avg_salary = (
+    df[df['POSTED'].dt.year == 2024]
+    .groupby([df['POSTED'].dt.date, 'IS_AI_CAREER'])['SALARY']
+    .mean()
+    .reset_index()
+)
+
+daily_avg_salary.columns = ['Date', 'AI Job', 'Avg Salary']
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 542}
+import plotly.express as px
+
+fig = px.line(
+    daily_avg_salary,
+    x='Date',
+    y='Avg Salary',
+    color='AI Job',
+    color_discrete_map={0: 'blue', 1: 'orange'},
+    labels={'AI Job': 'Career Type'},
+    title='📈 Daily Average Salary Trend (AI vs Non-AI Jobs) - 2024'
+)
+
+fig.update_layout(
+    xaxis_title='Date Posted',
+    yaxis_title='Average Salary',
+    legend_title='Job Type',
+    template='plotly_white'
+)
+fig.show()
+```
+
+#####  Insights & Interpretation: Daily Average Salary Trend (AI vs Non-AI Jobs) – 2024
+AI job salaries (orange line) show high volatility, fluctuating significantly day to day. This may indicate greater variability in compensation for niche roles, contract work, or high-value short-term positions.
+
+Non-AI job salaries (blue line) are more stable, maintaining a steady average throughout the year. This suggests traditional roles have more standardized pay structures.
+
+While peaks in AI salaries occasionally rise well above Non-AI levels, they are not sustained, highlighting inconsistency in AI pay trends.
+
+The overall average levels between the two are relatively close, with occasional days where Non-AI jobs slightly outperform.
+
+This trend implies that AI roles carry more earning potential but also more risk or inconsistency, whereas Non-AI roles offer more predictability and salary stability.
+
+#### Forcast the AI vs. Non-AI Job Count for next 2 years
+
+###### 1. Prepare the Time Series Data
+
+```{python}
+df['POSTED'] = pd.to_datetime(df['POSTED'], errors='coerce')
+df['YEAR_MONTH'] = df['POSTED'].dt.to_period('M').dt.to_timestamp()
+
+# Filter to keep valid salaries and group monthly
+monthly_salary = (
+    df[df['SALARY'].notna()]
+    .groupby(['YEAR_MONTH', 'IS_AI_CAREER'])['SALARY']
+    .mean()
+    .reset_index()
+)
+```
+
+##### 2. Pivot into Time Series Format (AI vs. Non-AI)
+
+```{python}
+salary_ts = monthly_salary.pivot(index='YEAR_MONTH', columns='IS_AI_CAREER', values='SALARY')
+salary_ts.columns = ['Non-AI', 'AI']
+```
+
+```{python}
+!pip3 install statsmodels
+```
+
+##### 3. Forecast Using Exponential Smoothing (or SARIMA)
+
+```{python}
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+# Forecast function
+def forecast_salary(series, label):
+    model = ExponentialSmoothing(series, trend='add', seasonal=None)
+    fitted = model.fit()
+    forecast = fitted.forecast(24)  # 24 months (2 years)
+    return forecast
+
+forecast_ai = forecast_salary(salary_ts['AI'].dropna(), 'AI')
+forecast_nonai = forecast_salary(salary_ts['Non-AI'].dropna(), 'Non-AI')
+```
+
+##### 4. Combine Forecasts and Plot
+
+```{python}
+import plotly.graph_objects as go
+
+# Create timeline for future months
+future_dates = pd.date_range(start=salary_ts.index[-1] + pd.offsets.MonthBegin(),
+                             periods=24, freq='MS')
+
+fig = go.Figure()
+
+# Historical
+fig.add_trace(go.Scatter(x=salary_ts.index, y=salary_ts['AI'], name='AI Salary (Actual)', line=dict(color='orange')))
+fig.add_trace(go.Scatter(x=salary_ts.index, y=salary_ts['Non-AI'], name='Non-AI Salary (Actual)', line=dict(color='blue')))
+
+# Forecast
+fig.add_trace(go.Scatter(x=future_dates, y=forecast_ai, name='AI Salary (Forecast)', line=dict(color='orange', dash='dash')))
+fig.add_trace(go.Scatter(x=future_dates, y=forecast_nonai, name='Non-AI Salary (Forecast)', line=dict(color='blue', dash='dash')))
+
+fig.update_layout(
+    title='📈 AI vs. Non-AI Salary Forecast (Next 2 Years)',
+    xaxis_title='Month',
+    yaxis_title='Average Salary',
+    template='plotly_white'
+)
+
+fig.show()
+```
+
+#####  Insights & Interpretation: AI vs. Non-AI Salary Forecast (Next 2 Years)
+AI Job Salaries are projected to grow gradually, rising from around $120K to $127K by mid-2026. This reflects steady but modest growth, suggesting a mature and stabilizing market.
+
+Non-AI Job Salaries are expected to grow more rapidly, increasing from $119K to $151K, indicating accelerated demand or catch-up effect in traditional roles.
+
+Despite AI jobs currently offering higher salaries, the forecast suggests Non-AI roles may surpass AI roles in average salary within two years if current trends persist.
+
+This shift may imply increasing skill premiums in non-AI sectors adopting AI technologies, or structural salary inflation in conventional domains.
+
+Strategic takeaway: Organizations may need to re-evaluate compensation frameworks and talent retention strategies, especially in non-AI functions undergoing transformation.
+
+### 1. Linear Regression
+
+```{python}
+%pip install scikit-learn
+```
+
+```{python}
+# 1. Import required libraries
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+import pandas as pd
+import numpy as np
+
+# 3. Select features and target
+features = ['STATE_NAME', 'TITLE_CLEAN', 'SKILLS_NAME']
+target = 'SALARY'
+
+# 4. Drop missing values in required columns
+df_reg = df.dropna(subset=features + [target])
+
+# 5. Define X and y
+X = df_reg[features]
+y = df_reg[target]
+
+# 6. Train-test split (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# 7. Preprocessor: one-hot encode categorical features
+preprocessor = ColumnTransformer([
+    ('cat', OneHotEncoder(handle_unknown='ignore'), features)
+])
+
+# 8. Build pipeline with preprocessing + Linear Regression
+reg_model = Pipeline([
+    ('preprocess', preprocessor),
+    ('regressor', LinearRegression())
+])
+
+# 9. Fit the model
+reg_model.fit(X_train, y_train)
+
+# 10. Evaluate
+train_score = reg_model.score(X_train, y_train)
+test_score = reg_model.score(X_test, y_test)
+
+print(f" Train R²: {train_score:.4f}")
+print(f" Test R²: {test_score:.4f}")
+```
+
+```{python}
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Make predictions
+y_pred = reg_model.predict(X_test)
+
+# R² Score
+r2 = r2_score(y_test, y_pred)
+
+# MSE
+mse = mean_squared_error(y_test, y_pred)
+
+# RMSE
+rmse = np.sqrt(mse)
+
+# Print evaluation metrics
+print("Linear Regression Train R²:", reg_model.score(X_train, y_train))
+print("Linear Regression Test R²:", r2)
+print(f"Linear Regression MSE: {mse:,.2f}")
+print(f"Linear Regression RMSE: {rmse:,.2f}")
+```
+
+```{python}
+# Keep top 50 titles
+top_titles = df_reg['TITLE_CLEAN'].value_counts().nlargest(50).index
+df_reg['TITLE_CLEAN'] = df_reg['TITLE_CLEAN'].where(df_reg['TITLE_CLEAN'].isin(top_titles), 'Other')
+
+# Keep top 50 skills
+top_skills = df_reg['SKILLS_NAME'].value_counts().nlargest(50).index
+df_reg['SKILLS_NAME'] = df_reg['SKILLS_NAME'].where(df_reg['SKILLS_NAME'].isin(top_skills), 'Other')
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 542}
+import plotly.express as px
+import pandas as pd
+
+# Get predictions
+y_pred = reg_model.predict(X_test)
+
+# Create a DataFrame to plot
+results_df = pd.DataFrame({
+    'Actual Salary': y_test,
+    'Predicted Salary': y_pred
+})
+
+# Plot using Plotly
+fig = px.scatter(
+    results_df,
+    x='Actual Salary',
+    y='Predicted Salary',
+    title='Predicted vs Actual Salary (Plotly)',
+    labels={'x': 'Actual Salary', 'y': 'Predicted Salary'},
+    opacity=0.6
+)
+
+# Add reference line (y = x)
+fig.add_shape(
+    type='line',
+    x0=results_df['Actual Salary'].min(),
+    y0=results_df['Actual Salary'].min(),
+    x1=results_df['Actual Salary'].max(),
+    y1=results_df['Actual Salary'].max(),
+    line=dict(color='red', dash='dash'),
+)
+
+fig.update_layout(template='plotly_white')
+fig.show()
+```
+
+## Ridge Regression
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+from sklearn.linear_model import Ridge
+
+reg_model = Pipeline([
+    ('preprocess', preprocessor),
+    ('regressor', Ridge(alpha=1.0))
+])
+reg_model.fit(X_train, y_train)
+print("Train R²:", reg_model.score(X_train, y_train))
+print("Test R²:", reg_model.score(X_test, y_test))
+```
+
+```{python}
+from sklearn.linear_model import Ridge
+from sklearn.metrics import r2_score, mean_squared_error
+import numpy as np
+from sklearn.pipeline import Pipeline
+
+# Create and train Ridge Regression pipeline
+reg_model = Pipeline([
+    ('preprocess', preprocessor),
+    ('regressor', Ridge(alpha=1.0))
+])
+
+reg_model.fit(X_train, y_train)
+
+# Predict on test set
+y_pred = reg_model.predict(X_test)
+
+# Evaluate metrics
+r2 = r2_score(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+
+# Output results
+print("Ridge Regression Train R²:", reg_model.score(X_train, y_train))
+print("Ridge Regression Test R²:", r2)
+print(f"Ridge Regression MSE: {mse:,.2f}")
+print(f"Ridge Regression RMSE: {rmse:,.2f}")
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 542}
+import plotly.express as px
+import pandas as pd
+
+# Predict using your trained model
+y_pred = reg_model.predict(X_test)
+
+# Create DataFrame for plotting
+results_df = pd.DataFrame({
+    'Actual Salary': y_test,
+    'Predicted Salary': y_pred
+})
+
+# Create scatter plot
+fig = px.scatter(
+    results_df,
+    x='Actual Salary',
+    y='Predicted Salary',
+    title='Ridge Regression: Predicted vs Actual Salary',
+    opacity=0.6,
+    template='plotly_white'
+)
+
+# Add reference diagonal (perfect predictions)
+fig.add_shape(
+    type='line',
+    x0=results_df['Actual Salary'].min(),
+    y0=results_df['Actual Salary'].min(),
+    x1=results_df['Actual Salary'].max(),
+    y1=results_df['Actual Salary'].max(),
+    line=dict(color='red', dash='dash'),
+)
+
+fig.update_layout(
+    xaxis_title='Actual Salary',
+    yaxis_title='Predicted Salary'
+)
+
+fig.show()
+```
+
+## Random Forest
+
+```{python}
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.model_selection import train_test_split
+import numpy as np
+
+# Select features and target
+features = ['STATE_NAME', 'TITLE_CLEAN', 'SKILLS_NAME']
+target = 'SALARY'
+
+# Drop missing values
+df_rf = df.dropna(subset=features + [target]).copy()
+
+# Optionally reduce cardinality
+top_titles = df_rf['TITLE_CLEAN'].value_counts().nlargest(50).index
+df_rf['TITLE_CLEAN'] = df_rf['TITLE_CLEAN'].where(df_rf['TITLE_CLEAN'].isin(top_titles), 'Other')
+top_skills = df_rf['SKILLS_NAME'].value_counts().nlargest(50).index
+df_rf['SKILLS_NAME'] = df_rf['SKILLS_NAME'].where(df_rf['SKILLS_NAME'].isin(top_skills), 'Other')
+
+# Define features and target
+X = df_rf[features]
+y = df_rf[target]
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Preprocessing
+preprocessor = ColumnTransformer([
+    ('cat', OneHotEncoder(handle_unknown='ignore'), features)
+])
+
+# Define Random Forest model pipeline
+rf_model = Pipeline([
+    ('preprocess', preprocessor),
+    ('regressor', RandomForestRegressor(n_estimators=100, random_state=42))
+])
+
+# Train the model
+rf_model.fit(X_train, y_train)
+```
+
+```{python}
+from sklearn.metrics import r2_score, mean_squared_error
+
+# Predict
+y_pred = rf_model.predict(X_test)
+
+# Metrics
+r2 = r2_score(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+
+print(f"Random Forest R² Score: {r2:.4f}")
+print(f"Random Forest MSE: {mse:,.2f}")
+print(f"Random Forest RMSE: {rmse:,.2f}")
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 542}
+import plotly.express as px
+import pandas as pd
+
+y_pred = rf_model.predict(X_test)
+results_df = pd.DataFrame({'Actual Salary': y_test, 'Predicted Salary': y_pred})
+
+fig = px.scatter(
+    results_df,
+    x='Actual Salary',
+    y='Predicted Salary',
+    title='Random Forest: Predicted vs Actual Salary',
+    opacity=0.6
+)
+fig.add_shape(
+    type='line',
+    x0=results_df['Actual Salary'].min(),
+    y0=results_df['Actual Salary'].min(),
+    x1=results_df['Actual Salary'].max(),
+    y1=results_df['Actual Salary'].max(),
+    line=dict(color='red', dash='dash')
+)
+fig.update_layout(template='plotly_white')
+fig.show()
+```
+
+##### Interpretation : 
+1. Linear Regression
+Train R²: 0.9808 — The model fits the training data extremely well, explaining over 98% of salary variance.
+
+Test R²: 0.5143 — Performance drops on unseen data, indicating overfitting.
+
+MSE: 417M | RMSE: $20,424 — Moderate prediction error.
+
+Interpretation: Linear regression captures the relationship between location, job title, and skills effectively in training, but generalizes less well. This suggests it's overly tuned to patterns in the training set.
+
+2. Ridge Regression (Regularized Linear Model)
+Train R²: 0.9078 — Slightly lower than linear regression, but more realistic.
+
+Test R²: 0.5419 — Best generalization performance of the three models.
+
+MSE: 393M | RMSE: $19,836 — Lowest error overall.
+
+Interpretation: Ridge regression controls overfitting by penalizing large coefficients, making it robust even with high-cardinality features (e.g., job titles, skills). It performs the best in balancing bias and variance.
+Business Insight: Use this model for reliable salary predictions and decision-making across diverse job profiles.
+
+3. Random Forest Regression
+Test R²: 0.1253 — Very low explanatory power on unseen data.
+
+MSE: 751M | RMSE: $27,408 — Highest error among all models.
+
+Interpretation: Random Forest is underperforming, likely due to:
+
+Sparse or high-cardinality features (like long skill/job title text).
+
+Lack of feature engineering (e.g., keyword extraction).
+
+The model's tendency to overfit without fine-tuning on small categorical encodings.
+
+Business Insight: Avoid using this version of Random Forest for salary prediction without deeper preprocessing (feature importance, dimensionality reduction, or NLP).
+
+### K-Means Clustering
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 562}
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+
+# Prepare features for clustering (use code numbers, not names)
+features = ['SOC_2021_2', 'NAICS2']  # Change as needed
+df_cluster = df.dropna(subset=features).copy()
+
+# Convert categorical codes to numbers (if needed)
+for col in features:
+    df_cluster[col] = LabelEncoder().fit_transform(df_cluster[col].astype(str))
+
+X = df_cluster[features]
+X_scaled = StandardScaler().fit_transform(X)
+
+# Find the optimal number of clusters (Elbow Method)
+inertia = []
+for k in range(2, 11):
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    kmeans.fit(X_scaled)
+    inertia.append(kmeans.inertia_)
+
+plt.plot(range(2, 11), inertia, marker='o')
+plt.xlabel('Number of Clusters')
+plt.ylabel('Inertia')
+plt.title('Elbow Method For Optimal k')
+plt.show()
+
+# Let's use 3 clusters (or your elbow result)
+kmeans = KMeans(n_clusters=3, random_state=42)
+df_cluster['Cluster'] = kmeans.fit_predict(X_scaled)
+
+print(df_cluster.groupby('Cluster').size())
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 542}
+import plotly.express as px
+import pandas as pd
+
+# Prepare elbow data
+elbow_df = pd.DataFrame({
+    'k': list(range(2, 11)),
+    'inertia': inertia
+})
+
+# Create line plot
+fig = px.line(
+    elbow_df,
+    x='k',
+    y='inertia',
+    markers=True,
+    title='Elbow Method for Optimal k',
+    labels={'k': 'Number of Clusters', 'inertia': 'Inertia'}
+)
+
+fig.show()
+```
+
+##### Elbow Method Interpretation
+The line plot represents the inertia (sum of squared distances to cluster centers) for various values of k (number of clusters):
+•	The sharp drop between k=2 and k=3 suggests that moving from 2 to 3 clusters significantly reduces the within-cluster variance.
+•	Beyond k=3, the rate of decrease in inertia flattens, indicating diminishing returns in model improvement.
+•	This "elbow point" at k=3 is a strong indicator that 3 clusters is optimal for this dataset.
+ Conclusion:
+k = 3 is the most meaningful and cost-effective number of clusters for this segmentation task.
+ Balanced clustering (not too skewed) with clearly separable groups makes this output suitable for: Job market segmentation, Tailored salary or skill analysis, and Career path recommendation systems
+
+```{python}
+df_with_titles = df.merge(df_cluster[['ID', 'Cluster']], on='ID')
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# For each cluster, analyze keywords in job titles
+for cluster_num in sorted(df_with_titles['Cluster'].unique()):
+    cluster_data = df_with_titles[df_with_titles['Cluster'] == cluster_num]
+
+    vectorizer = TfidfVectorizer(stop_words='english', max_features=20)
+    tfidf_matrix = vectorizer.fit_transform(cluster_data['TITLE_CLEAN'].astype(str))
+
+    print(f"\n🔹 Top Terms in Cluster {cluster_num}:")
+    print(vectorizer.get_feature_names_out())
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/}
+%pip install wordcloud
+```
+
+```{python}
+#| colab: {base_uri: https://localhost:8080/, height: 1000}
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+
+# Combine titles for each cluster into one string
+for cluster_num in sorted(df_with_titles['Cluster'].unique()):
+    text = ' '.join(df_with_titles[df_with_titles['Cluster'] == cluster_num]['TITLE_CLEAN'].dropna().astype(str))
+
+    # Create word cloud
+    wordcloud = WordCloud(width=800, height=400, background_color='white', colormap='viridis').generate(text)
+
+    # Plot
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.title(f'🧠 Word Cloud for Cluster {cluster_num}', fontsize=16)
+    plt.show()
+```
+
+```{python}
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+
+# Prepare features for clustering (use code numbers, not names)
+features = ['SALARY']  # Change as needed
+df_cluster = df.dropna(subset=features).copy()
+
+# Convert categorical codes to numbers (if needed)
+for col in features:
+    df_cluster[col] = LabelEncoder().fit_transform(df_cluster[col].astype(str))
+
+X = df_cluster[features]
+X_scaled = StandardScaler().fit_transform(X)
+
+# Find the optimal number of clusters (Elbow Method)
+inertia = []
+for k in range(2, 11):
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    kmeans.fit(X_scaled)
+    inertia.append(kmeans.inertia_)
+
+plt.plot(range(2, 11), inertia, marker='o')
+plt.xlabel('Number of Clusters')
+plt.ylabel('Inertia')
+plt.title('Elbow Method For Optimal k')
+plt.show()
+
+# Let's use 3 clusters (or your elbow result)
+kmeans = KMeans(n_clusters=3, random_state=42)
+df_cluster['Cluster'] = kmeans.fit_predict(X_scaled)
+
+print(df_cluster.groupby('Cluster').size())
+```
+
+```{python}
+import plotly.express as px
+import pandas as pd
+
+# Prepare elbow data
+elbow_df = pd.DataFrame({
+    'k': list(range(2, 11)),
+    'inertia': inertia
+})
+
+# Create line plot
+fig = px.line(
+    elbow_df,
+    x='k',
+    y='inertia',
+    markers=True,
+    title='Elbow Method for Optimal k',
+    labels={'k': 'Number of Clusters', 'inertia': 'Inertia'}
+)
+
+fig.show()
+```
+
+##### The clustering reveals three salary-based segments. Cluster 1 (51,814 jobs) is the largest and likely represents standard salary roles. Cluster 0 (11,626 jobs) reflects mid-range salaries, possibly specialized or region-specific roles. Cluster 2 (9,036 jobs) is the smallest and may capture outliers like high-paying executive roles or low-paying internships. These insights help identify salary norms, deviations, and potential anomalies for strategic compensation planning.
+
