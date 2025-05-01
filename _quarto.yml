@@ -19,7 +19,6 @@ website:
       - href: skill_gap_analysis.qmd
         text: "Skill-Gap Analysis" 
 
-      
 format:
   html:
     theme: cosmo
