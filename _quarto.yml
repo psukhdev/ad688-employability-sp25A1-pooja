@@ -8,8 +8,6 @@ website:
     left:
       - href: index.qmd
         text: "Home"
-      - href: introduction.qmd
-        text: "Introduction"
       - href: research_introduction.qmd
         text: "Research"
       - href: data_analysis.qmd
@@ -20,7 +18,6 @@ website:
         text: "Skill-Gap Analysis" 
       - href: salary_trend_analysis.qmd
         text: "Final_Salary Trend Analysis" 
-
 format:
   html:
     theme: cosmo
