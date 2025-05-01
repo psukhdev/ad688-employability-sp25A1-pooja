@@ -18,6 +18,8 @@ website:
         text: "Skill-Gap Analysis" 
       - href: salary_trend_analysis.qmd
         text: "Final_Salary Trend Analysis" 
+      - href: final_report.qmd
+        text: "Report" 
 format:
   html:
     theme: cosmo
