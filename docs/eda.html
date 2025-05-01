@@ -129,10 +129,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./introduction.qmd"> 
-<span class="menu-text">Introduction</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./research_introduction.html"> 
 <span class="menu-text">Research</span></a>
   </li>  
@@ -141,28 +137,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Data Analysis</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./data_cleaning.ipynb"> 
-<span class="menu-text">Data Cleaning &amp; Exploration</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link active" href="./eda.html" aria-current="page"> 
 <span class="menu-text">Exploratory Data Analysis</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./skill_gap_analysis.ipynb"> 
-<span class="menu-text">Skill Gap Analysis</span></a>
+    <a class="nav-link" href="./skill_gap_analysis.html"> 
+<span class="menu-text">Skill-Gap Analysis</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./ml_methods.qmd"> 
-<span class="menu-text">ML Methods</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./nlp_methods.qmd"> 
-<span class="menu-text">NLP Methods</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./career_plan.qmd"> 
-<span class="menu-text">Career Strategy</span></a>
+    <a class="nav-link" href="./salary_trend_analysis.html"> 
+<span class="menu-text">Final_Salary Trend Analysis</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -212,7 +196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div id="2a95de07" class="cell" data-execution_count="1">
+<div id="73fa39b2" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -380,7 +364,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="280792e9" class="cell" data-execution_count="2">
+<div id="489a378d" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data.columns)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Index(['ID', 'LAST_UPDATED_DATE', 'LAST_UPDATED_TIMESTAMP', 'DUPLICATES',
@@ -393,7 +377,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       dtype='object', length=131)</code></pre>
 </div>
 </div>
-<div id="a7b46763" class="cell" data-execution_count="3">
+<div id="07aac035" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data.columns.to_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;bound method IndexOpsMixin.tolist of Index(['ID', 'LAST_UPDATED_DATE', 'LAST_UPDATED_TIMESTAMP', 'DUPLICATES',
@@ -406,7 +390,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       dtype='object', length=131)&gt;</code></pre>
 </div>
 </div>
-<div id="525ba94c" class="cell" data-execution_count="4">
+<div id="6f16b207" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">', '</span>.join(data.columns))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data.columns.tolist())</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data.columns.values.tolist())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -416,7 +400,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ['ID', 'LAST_UPDATED_DATE', 'LAST_UPDATED_TIMESTAMP', 'DUPLICATES', 'POSTED', 'EXPIRED', 'DURATION', 'SOURCE_TYPES', 'SOURCES', 'URL', 'ACTIVE_URLS', 'ACTIVE_SOURCES_INFO', 'TITLE_RAW', 'BODY', 'MODELED_EXPIRED', 'MODELED_DURATION', 'COMPANY', 'COMPANY_NAME', 'COMPANY_RAW', 'COMPANY_IS_STAFFING', 'EDUCATION_LEVELS', 'EDUCATION_LEVELS_NAME', 'MIN_EDULEVELS', 'MIN_EDULEVELS_NAME', 'MAX_EDULEVELS', 'MAX_EDULEVELS_NAME', 'EMPLOYMENT_TYPE', 'EMPLOYMENT_TYPE_NAME', 'MIN_YEARS_EXPERIENCE', 'MAX_YEARS_EXPERIENCE', 'IS_INTERNSHIP', 'SALARY', 'REMOTE_TYPE', 'REMOTE_TYPE_NAME', 'ORIGINAL_PAY_PERIOD', 'SALARY_TO', 'SALARY_FROM', 'LOCATION', 'CITY', 'CITY_NAME', 'COUNTY', 'COUNTY_NAME', 'MSA', 'MSA_NAME', 'STATE', 'STATE_NAME', 'COUNTY_OUTGOING', 'COUNTY_NAME_OUTGOING', 'COUNTY_INCOMING', 'COUNTY_NAME_INCOMING', 'MSA_OUTGOING', 'MSA_NAME_OUTGOING', 'MSA_INCOMING', 'MSA_NAME_INCOMING', 'NAICS2', 'NAICS2_NAME', 'NAICS3', 'NAICS3_NAME', 'NAICS4', 'NAICS4_NAME', 'NAICS5', 'NAICS5_NAME', 'NAICS6', 'NAICS6_NAME', 'TITLE', 'TITLE_NAME', 'TITLE_CLEAN', 'SKILLS', 'SKILLS_NAME', 'SPECIALIZED_SKILLS', 'SPECIALIZED_SKILLS_NAME', 'CERTIFICATIONS', 'CERTIFICATIONS_NAME', 'COMMON_SKILLS', 'COMMON_SKILLS_NAME', 'SOFTWARE_SKILLS', 'SOFTWARE_SKILLS_NAME', 'ONET', 'ONET_NAME', 'ONET_2019', 'ONET_2019_NAME', 'CIP6', 'CIP6_NAME', 'CIP4', 'CIP4_NAME', 'CIP2', 'CIP2_NAME', 'SOC_2021_2', 'SOC_2021_2_NAME', 'SOC_2021_3', 'SOC_2021_3_NAME', 'SOC_2021_4', 'SOC_2021_4_NAME', 'SOC_2021_5', 'SOC_2021_5_NAME', 'LOT_CAREER_AREA', 'LOT_CAREER_AREA_NAME', 'LOT_OCCUPATION', 'LOT_OCCUPATION_NAME', 'LOT_SPECIALIZED_OCCUPATION', 'LOT_SPECIALIZED_OCCUPATION_NAME', 'LOT_OCCUPATION_GROUP', 'LOT_OCCUPATION_GROUP_NAME', 'LOT_V6_SPECIALIZED_OCCUPATION', 'LOT_V6_SPECIALIZED_OCCUPATION_NAME', 'LOT_V6_OCCUPATION', 'LOT_V6_OCCUPATION_NAME', 'LOT_V6_OCCUPATION_GROUP', 'LOT_V6_OCCUPATION_GROUP_NAME', 'LOT_V6_CAREER_AREA', 'LOT_V6_CAREER_AREA_NAME', 'SOC_2', 'SOC_2_NAME', 'SOC_3', 'SOC_3_NAME', 'SOC_4', 'SOC_4_NAME', 'SOC_5', 'SOC_5_NAME', 'LIGHTCAST_SECTORS', 'LIGHTCAST_SECTORS_NAME', 'NAICS_2022_2', 'NAICS_2022_2_NAME', 'NAICS_2022_3', 'NAICS_2022_3_NAME', 'NAICS_2022_4', 'NAICS_2022_4_NAME', 'NAICS_2022_5', 'NAICS_2022_5_NAME', 'NAICS_2022_6', 'NAICS_2022_6_NAME']</code></pre>
 </div>
 </div>
-<div id="609a9437" class="cell" data-execution_count="5">
+<div id="eff4697f" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -442,7 +426,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="top-paying-regions-for-ai-vs-non-ai" class="level2">
 <h2 class="anchored" data-anchor-id="top-paying-regions-for-ai-vs-non-ai">2. Top Paying Regions (for AI vs Non-AI)</h2>
-<div id="2f72edab" class="cell" data-execution_count="6">
+<div id="e4eaa488" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Group by state and AI job status</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>region_salary <span class="op">=</span> data.groupby([<span class="st">'STATE_NAME'</span>, <span class="st">'is_ai_job'</span>])[<span class="st">'SALARY_FROM'</span>].mean().reset_index()</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -467,7 +451,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="remote-vs-in-office-salary-comparison" class="level2">
 <h2 class="anchored" data-anchor-id="remote-vs-in-office-salary-comparison">3. Remote vs In-Office Salary Comparison</h2>
-<div id="ec1d8329" class="cell" data-execution_count="7">
+<div id="44b579f6" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove NaN remote types</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>remote_salary <span class="op">=</span> data.dropna(subset<span class="op">=</span>[<span class="st">'REMOTE_TYPE_NAME'</span>])</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -490,7 +474,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="industry-salary-trends-2023-vs-2024" class="level2">
 <h2 class="anchored" data-anchor-id="industry-salary-trends-2023-vs-2024">4. Industry Salary Trends (2023 vs 2024)</h2>
-<div id="5c9e80f7" class="cell" data-execution_count="8">
+<div id="0b3adc74" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert POSTED to datetime and extract year</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>data[<span class="st">'POSTED'</span>] <span class="op">=</span> pd.to_datetime(data[<span class="st">'POSTED'</span>], errors<span class="op">=</span><span class="st">'coerce'</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>data[<span class="st">'year'</span>] <span class="op">=</span> data[<span class="st">'POSTED'</span>].dt.year</span>
@@ -522,7 +506,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="to-cleanfilter-the-salary-ranges" class="level2">
 <h2 class="anchored" data-anchor-id="to-cleanfilter-the-salary-ranges">To clean/filter the salary ranges</h2>
-<div id="122043d0" class="cell" data-execution_count="9">
+<div id="34da8d99" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter out rows with null salary</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>salary_clean <span class="op">=</span> data[data[<span class="st">'SALARY_FROM'</span>].notnull()]</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -545,7 +529,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 Filtered rows (no outliers): 31961</code></pre>
 </div>
 </div>
-<div id="a8acd1ab" class="cell" data-execution_count="10">
+<div id="d152c3da" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># AI vs Non-AI plot after outlier removal</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span><span class="st">'is_ai_job'</span>, y<span class="op">=</span><span class="st">'SALARY_FROM'</span>, data<span class="op">=</span>salary_filtered)</span>
@@ -565,7 +549,7 @@ Filtered rows (no outliers): 31961</code></pre>
 </section>
 <section id="top-paying-regions-cleaned-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="top-paying-regions-cleaned-dataset">Top Paying Regions (Cleaned Dataset)</h2>
-<div id="8eda0c44" class="cell" data-execution_count="11">
+<div id="1c0168a6" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Group by STATE_NAME and is_ai_job using filtered dataset</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>region_salary_clean <span class="op">=</span> salary_filtered.groupby([<span class="st">'STATE_NAME'</span>, <span class="st">'is_ai_job'</span>])[<span class="st">'SALARY_FROM'</span>].mean().reset_index()</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -591,7 +575,7 @@ Filtered rows (no outliers): 31961</code></pre>
 </section>
 <section id="remote-vs-in-office-salary-cleaned-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="remote-vs-in-office-salary-cleaned-dataset">Remote vs In-Office Salary (Cleaned Dataset)</h2>
-<div id="398ab0f4" class="cell" data-execution_count="12">
+<div id="822f77e0" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop rows with missing remote type info</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>remote_clean <span class="op">=</span> salary_filtered.dropna(subset<span class="op">=</span>[<span class="st">'REMOTE_TYPE_NAME'</span>])</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -613,7 +597,7 @@ Filtered rows (no outliers): 31961</code></pre>
 </div>
 </div>
 </div>
-<div id="379737e1" class="cell" data-execution_count="13">
+<div id="4408fc27" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the average salary by type </span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>remote_avg <span class="op">=</span> remote_clean.groupby(<span class="st">'REMOTE_TYPE_NAME'</span>)[<span class="st">'SALARY_FROM'</span>].mean().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(remote_avg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -629,7 +613,7 @@ Name: SALARY_FROM, dtype: float64</code></pre>
 </section>
 <section id="industry-salary-trends-cleaned-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="industry-salary-trends-cleaned-dataset">Industry Salary Trends (Cleaned Dataset)</h2>
-<div id="98495f26" class="cell" data-execution_count="14">
+<div id="890ef637" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make sure 'POSTED' is in datetime format</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>salary_filtered[<span class="st">'POSTED'</span>] <span class="op">=</span> pd.to_datetime(salary_filtered[<span class="st">'POSTED'</span>], errors<span class="op">=</span><span class="st">'coerce'</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -653,18 +637,22 @@ Name: SALARY_FROM, dtype: float64</code></pre>
 <span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
 <span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\pooja\AppData\Local\Temp\ipykernel_15780\1923549133.py:2: SettingWithCopyWarning: 
+<pre><code>C:\Users\pooja\AppData\Local\Temp\ipykernel_14952\1923549133.py:2: SettingWithCopyWarning:
+
+
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  salary_filtered['POSTED'] = pd.to_datetime(salary_filtered['POSTED'], errors='coerce')
-C:\Users\pooja\AppData\Local\Temp\ipykernel_15780\1923549133.py:5: SettingWithCopyWarning: 
+
+C:\Users\pooja\AppData\Local\Temp\ipykernel_14952\1923549133.py:5: SettingWithCopyWarning:
+
+
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
-  salary_filtered['year'] = salary_filtered['POSTED'].dt.year</code></pre>
+</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -674,7 +662,7 @@ See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stab
 </div>
 </div>
 </div>
-<div id="3df0687f" class="cell" data-execution_count="15">
+<div id="b16e171d" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>top_industries <span class="op">=</span> industry_salary_trend[industry_salary_trend[<span class="st">'year'</span>] <span class="op">==</span> <span class="dv">2024</span>] <span class="op">\</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    .nlargest(<span class="dv">10</span>, <span class="st">'SALARY_FROM'</span>)[<span class="st">'NAICS2_NAME'</span>].tolist()</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
