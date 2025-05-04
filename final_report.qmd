@@ -197,6 +197,14 @@ Figures
 
 ![Figure 10](images/newplot21.png)
 
+![Figure 10](images/newplot22.png)
+
+![Figure 10](images/newplot23.png)
+
+![Figure 10](images/newplot24.png)
+
+![Figure 10](images/newplot25.png)
+
 ## References
 1. Lightcast Job Postings Dataset (2024), U.S. Bureau of Labor Statistics (2023).
 2. Pedregosa et al. (2011). Scikit-learn: Machine Learning in Python. JMLR 12, 2825–2830
