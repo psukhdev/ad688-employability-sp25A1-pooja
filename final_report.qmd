@@ -154,25 +154,48 @@ Develop dynamic salary prediction tool
 
 Figures
 
-![Figure 1](images/newplot (1).png)
+![Figure 1](images/2.png)
+![Figure 1](images/missing_values_heatmap.png.png)
 
-![Figure 2](images/newplot (4).png)
+![Figure 2](images/newplot2.png.png)
 
-![Figure 3](images/newplot (5).png)
+![Figure 3](images/newplot3.png)
 
-![Figure 4](images/newplot (6).png)
+![Figure 4](images/newplot4.png)
 
-![Figure 5](images/newplot (7).png)
+![Figure 5](images/newplot5.png)
 
-![Figure 6](images/newplot (8).png)
+![Figure 6](images/newplot6.png)
 
-![Figure 7](images/newplot (9).png)
+![Figure 7](images/newplot7.png)
 
-![Figure 8](images/newplot (10).png)
+![Figure 8](images/newplot8.png)
 
-![Figure 9](images/newplot (11).png)
+![Figure 9](images/newplot9.png)
 
-![Figure 10](images/newplot (12).png)
+![Figure 10](images/newplot10.png)
+
+![Figure 10](images/newplot11.png)
+
+![Figure 10](images/newplot12.png)
+
+![Figure 10](images/newplot13.png)
+
+![Figure 10](images/newplot14.png)
+
+![Figure 10](images/newplot15.png)
+
+![Figure 10](images/newplot16.png)
+
+![Figure 10](images/newplot17.png)
+
+![Figure 10](images/newplot18.png)
+
+![Figure 10](images/newplot19.png)
+
+![Figure 10](images/newplot20.png)
+
+![Figure 10](images/newplot21.png)
 
 ## References
 1. Lightcast Job Postings Dataset (2024), U.S. Bureau of Labor Statistics (2023).
